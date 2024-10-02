@@ -1,46 +1,47 @@
-# starter-repo
+# Create a Bryntum Scheduler component in a Refine application using NextJS
 
-<div align="center" style="margin: 30px;">
-    <a href="https://refine.dev">
-    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
-    </a>
-</div>
-<br/>
+This [Refine](https://github.com/refinedev/refine) project was generated using the [Refine CLI-based Scaffolder](https://github.com/refinedev/refine/tree/master/packages/create-refine-app). The following CLI options were selected:
 
-This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
+- **Choose a project template**: Next.js
+- **Choose your backend service to connect**: REST API - Installs the REST API data provider.
+- **Do you want to use a UI Framework?**: Headless - No UI framework.
+- **Do you want to add example pages?**: Yes
+- **Do you need any Authentication logic?**: None
 
-## Getting Started
+The following code was added to the Next.js template for creating a SQLite database populated with Bryntum Scheduler data:
 
-A React Framework for building internal tools, admin panels, dashboards & B2B apps with unmatched flexibility ✨
+- `/src/config/database.ts`: [Sequelize](https://sequelize.org/), a Node.js ORM, SQLite database configuration.
+- `/src/models`:  Sequelize models for Bryntum Scheduler data.
+- `/src/initialData`: Example events, resources, and assignments JSON Bryntum Scheduler data.
+- `/src/addExampleData.js`: Seed script to populate a local SQLite database with example JSON data.
 
-Refine's hooks and components simplifies the development process and eliminates the repetitive tasks by providing industry-standard solutions for crucial aspects of a project, including authentication, access control, routing, networking, state management, and i18n.
+The following npm packages were added:
 
-## Available Scripts
+- `sequelize`
+- `sqlite3`
 
-### Running the development server.
+## Getting started
 
-```bash
-    npm run dev
+Install the dependencies by running the following command: 
+
+```sh
+npm install
 ```
 
-### Building for production.
+Populate a local SQLite database with the example scheduler data in `src/initialData`:
 
-```bash
-    npm run build
+```sh
+node src/addExampleData.js
 ```
 
-### Running the production server.
+## Running the app
 
-```bash
-    npm run start
+Run the local dev server using the following command:
+
+```sh
+npm run dev
 ```
 
-## Learn More
+You'll see the template Next.js CRUD app at `http://localhost:3000/` with a blog posts and categories page:
 
-To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
-
-- **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
-
-## License
-
-MIT
+![Initial Bryntum Gantt with two tasks and a dependency between the tasks](images/initial-app.png)

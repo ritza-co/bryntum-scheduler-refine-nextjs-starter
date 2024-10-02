@@ -1,0 +1,32 @@
+[
+  {
+      "id"        : 1,
+      "startDate" : "2024-10-01T09:00:00.00Z",
+      "endDate"   : "2024-10-01T11:00:00.00Z",
+      "name"      : "Meeting"
+      },
+  {
+      "id"         : 2,
+      "startDate" : "2024-10-01T11:00:00.00Z",
+      "endDate"   : "2024-10-01T13:00:00.00Z",
+      "name"       : "Conference"
+  },
+  {
+      "id"         : 3,
+      "startDate" : "2024-10-01T14:00:00.00Z",
+      "endDate"   : "2024-10-01T16:00:00.00Z",
+      "name"       : "Interview"
+  },
+  {
+      "id"         : 4,
+      "startDate" : "2024-10-01T08:00:00.00Z",
+      "endDate"   : "2024-10-01T10:00:00.00Z",
+      "name"       : "Sales meeting"
+  },
+  {
+      "id"         : 5,
+      "startDate" : "2024-10-01T10:00:00.00Z",
+      "endDate"   : "2024-10-01T12:00:00.00Z",
+      "name"       : "Budget review"
+  }
+]

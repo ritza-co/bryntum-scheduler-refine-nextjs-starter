@@ -2,6 +2,7 @@
   "name": "starter-repo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
@@ -16,25 +17,27 @@
     "@refinedev/cli": "^2.16.21",
     "@refinedev/core": "^4.47.1",
     "@refinedev/devtools": "^1.1.32",
-    "@refinedev/nextjs-router": "^6.0.0",
     "@refinedev/kbar": "^1.3.6",
+    "@refinedev/nextjs-router": "^6.0.0",
+    "@refinedev/react-hook-form": "^4.8.14",
+    "@refinedev/react-table": "^5.6.6",
+    "@refinedev/simple-rest": "^5.0.1",
+    "@tanstack/react-table": "^8.2.6",
     "next": "^14.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@refinedev/simple-rest": "^5.0.1",
-    "@refinedev/react-hook-form": "^4.8.14",
-    "@refinedev/react-table": "^5.6.6",
-    "@tanstack/react-table": "^8.2.6"
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@types/node": "^18.16.2",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@types/node": "^18.16.2",
     "@typescript-eslint/parser": "^6.21.0",
-    "typescript": "^5.4.2",
     "cross-env": "^7.0.3",
     "eslint": "^8",
-    "eslint-config-next": "^14.1.0"
+    "eslint-config-next": "^14.1.0",
+    "typescript": "^5.4.2"
   },
   "refine": {
     "projectId": "29JpC5-mXjybd-1RmKPt"
