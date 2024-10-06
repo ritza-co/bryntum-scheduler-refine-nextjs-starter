@@ -20,6 +20,16 @@ The following npm packages were added:
 - `sequelize`
 - `sqlite3`
 
+The following Next.js configuration was added to the `next.config.js` file:
+
+```js
+const nextConfig = {
+    serverExternalPackages : ['sequelize']
+};
+```
+
+This removes the `sequelize` package from the Next.js server components bundling as bundling causes an import error when running the app.
+
 ## Getting started
 
 Install the dependencies by running the following command: 
