@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    serverExternalPackages : ['sequelize']
+    experimental : {
+        serverComponentsExternalPackages : ['sequelize']
+    }
 };
 
 export default nextConfig;
