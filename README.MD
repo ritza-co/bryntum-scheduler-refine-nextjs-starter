@@ -24,7 +24,9 @@ The following Next.js configuration was added to the `next.config.js` file:
 
 ```js
 const nextConfig = {
-    serverExternalPackages : ['sequelize']
+    experimental : {
+        serverComponentsExternalPackages : ['sequelize']
+    }
 };
 ```
 

@@ -14,6 +14,8 @@
     "refine": "refine"
   },
   "dependencies": {
+    "@bryntum/scheduler": "^6.1.1",
+    "@bryntum/scheduler-react": "^6.1.1",
     "@refinedev/cli": "^2.16.21",
     "@refinedev/core": "^4.47.1",
     "@refinedev/devtools": "^1.1.32",

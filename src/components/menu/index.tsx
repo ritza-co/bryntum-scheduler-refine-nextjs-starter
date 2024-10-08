@@ -15,7 +15,7 @@ export const Menu = () => {
                             href={item.route ?? '/'}
                             className={selectedKey === item.key ? 'active' : ''}
                         >
-                            {item.label}
+                            {item.name}
                         </Link>
                     </li>
                 ))}

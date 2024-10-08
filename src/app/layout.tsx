@@ -7,6 +7,7 @@ import React, { Suspense } from 'react';
 
 import { dataProvider } from '@providers/data-provider';
 import '@styles/global.css';
+import { schedulerDataProvider } from '@providers/scheduler-data-provider';
 
 export const metadata: Metadata = {
     title       : 'Refine',
@@ -30,7 +31,11 @@ export default function RootLayout({
                         <DevtoolsProvider>
                             <Refine
                                 routerProvider={routerProvider}
-                                dataProvider={dataProvider}
+                                dataProvider={{
+                                // `default` is required to determine the default data provider
+                                    default   : dataProvider,
+                                    scheduler : schedulerDataProvider
+                                }}
                                 resources={[
                                     {
                                         name   : 'blog_posts',
@@ -50,6 +55,20 @@ export default function RootLayout({
                                         show   : '/categories/show/:id',
                                         meta   : {
                                             canDelete : true
+                                        }
+                                    },
+                                    {
+                                        name : 'scheduler',
+                                        list : '/scheduler',
+                                        meta : {
+                                            dataProviderName : 'scheduler'
+                                        }
+                                    },
+                                    {
+                                        name : 'events',
+                                        list : '/events',
+                                        meta : {
+                                            dataProviderName : 'scheduler'
                                         }
                                     }
                                 ]}
