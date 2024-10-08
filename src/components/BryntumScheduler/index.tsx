@@ -34,7 +34,7 @@ export default function Scheduler({ ...props }) {
     });
 
     const { mutate: mutateCreate } = useCreate();
-    const { mutate: mutatDelete } = useDelete();
+    const { mutate: mutateDelete } = useDelete();
     const { mutate: mutateUpdate } = useUpdate();
 
     const schedulerRef = useRef<BryntumScheduler>(null);
@@ -67,7 +67,7 @@ export default function Scheduler({ ...props }) {
             if (action === 'remove') {
                 if (`${records[0]?.data?.id}`.startsWith('_generated')) return;
                 records.forEach((record) => {
-                    mutatDelete({
+                    mutateDelete({
                         resource         : 'resources',
                         dataProviderName : 'scheduler',
                         id               : record.data.id
@@ -102,7 +102,7 @@ export default function Scheduler({ ...props }) {
             if (action === 'remove') {
                 if (`${records[0]?.data?.id}`.startsWith('_generated')) return;
                 records.forEach((record) => {
-                    mutatDelete({
+                    mutateDelete({
                         resource         : 'events',
                         dataProviderName : 'scheduler',
                         id               : record.data.id
