@@ -43,7 +43,7 @@ npm install
 Populate a local SQLite database with the example scheduler data in `src/initialData`:
 
 ```sh
-node src/addExampleData.js
+npx tsx ./src/addExampleData.ts
 ```
 
 ## Running the app
