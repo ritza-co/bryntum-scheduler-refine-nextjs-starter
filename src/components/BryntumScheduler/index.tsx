@@ -20,22 +20,24 @@ type SyncData = {
 
 export default function Scheduler({ ...props }) {
 
-    const { data: dataResources } = useList({
-        resource         : 'resources',
-        dataProviderName : 'scheduler'
-    });
-    const { data: dataEvents } = useList({
-        resource         : 'events',
-        dataProviderName : 'scheduler'
-    });
-    const { data: dataAssignments } = useList({
-        resource         : 'assignments',
-        dataProviderName : 'scheduler'
-    });
+    const
+        { data: dataResources } = useList({
+            resource         : 'resources',
+            dataProviderName : 'scheduler'
+        }),
+        { data: dataEvents } = useList({
+            resource         : 'events',
+            dataProviderName : 'scheduler'
+        }),
+        { data: dataAssignments } = useList({
+            resource         : 'assignments',
+            dataProviderName : 'scheduler'
+        });
 
-    const { mutate: mutateCreate } = useCreate();
-    const { mutate: mutateDelete } = useDelete();
-    const { mutate: mutateUpdate } = useUpdate();
+    const
+        { mutate: mutateCreate } = useCreate(),
+        { mutate: mutateDelete } = useDelete(),
+        { mutate: mutateUpdate } = useUpdate();
 
     const schedulerRef = useRef<BryntumScheduler>(null);
 
@@ -196,9 +198,11 @@ export default function Scheduler({ ...props }) {
         const scheduler = schedulerRef?.current?.instance;
     }, []);
 
-    const events = useMemo(() => dataEvents?.data || [], [dataEvents]);
-    const assignments = useMemo(() => dataAssignments?.data || [], [dataAssignments]);
-    const resources = useMemo(() => dataResources?.data || [], [dataResources]);
+    const
+        events = useMemo(() => dataEvents?.data || [], [dataEvents]),
+        assignments = useMemo(() => dataAssignments?.data || [], [dataAssignments]),
+        resources = useMemo(() => dataResources?.data || [], [dataResources]);
+
     return (
         <div id="app">
             <BryntumScheduler

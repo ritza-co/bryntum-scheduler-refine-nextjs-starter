@@ -1,9 +1,10 @@
 import { NextResponse, NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    const url = request.nextUrl;
-    const resource = url.pathname.split('/')[2]; // Extract the resource name from the path (e.g., /api/[resources]/[id])
-    const allowedResources = ['events', 'resources', 'assignments'];
+    const
+        url = request.nextUrl,
+        resource = url.pathname.split('/')[2], // Extract the resource name from the path (e.g., /api/[resources]/[id])
+        allowedResources = ['events', 'resources', 'assignments'];
 
     // Check if the resource is allowed
     if (!allowedResources.includes(resource)) {
