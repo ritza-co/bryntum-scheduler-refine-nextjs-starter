@@ -56,4 +56,4 @@ npm run dev
 
 You'll see the template Next.js CRUD app at `http://localhost:3000/` with a blog posts and categories page:
 
-![Initial Bryntum Gantt with two tasks and a dependency between the tasks](images/initial-app.png)
+![Initial Refine app](images/initial-app.png)
