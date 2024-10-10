@@ -13,14 +13,14 @@ The following code was added to the Next.js template for creating a SQLite datab
 - `/src/config/database.ts`: [Sequelize](https://sequelize.org/), a Node.js ORM, SQLite database configuration.
 - `/src/models`:  Sequelize models for Bryntum Scheduler data.
 - `/src/initialData`: Example events, resources, and assignments JSON Bryntum Scheduler data.
-- `/src/addExampleData.js`: Seed script to populate a local SQLite database with example JSON data.
+- `/src/addExampleData.ts`: Seed script to populate a local SQLite database with example JSON data.
 
 The following npm packages were added:
 
 - `sequelize`
 - `sqlite3`
 
-The following Next.js configuration was added to the `next.config.js` file:
+The following Next.js configuration was added to the `next.config.mjs` file:
 
 ```js
 const nextConfig = {
@@ -54,6 +54,6 @@ Run the local dev server using the following command:
 npm run dev
 ```
 
-You'll see the template Next.js CRUD app at `http://localhost:3000/` with a blog posts and categories page:
+You'll see the template Next.js CRUD app at `http://localhost:3000/` :
 
-![Initial Bryntum Gantt with two tasks and a dependency between the tasks](images/initial-app.png)
+![Bryntum Scheduler](images/initial-app.png)
