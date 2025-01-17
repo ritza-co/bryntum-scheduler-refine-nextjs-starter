@@ -1,4 +1,4 @@
-import { DevtoolsProvider } from '@providers/devtools';
+import { DevtoolsProvider, DevtoolsPanel } from '@refinedev/devtools';
 import { GitHubBanner, Refine } from '@refinedev/core';
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 import routerProvider from '@refinedev/nextjs-router';
@@ -64,6 +64,7 @@ export default function RootLayout({
                                 <RefineKbar />
                             </Refine>
                         </DevtoolsProvider>
+                        <DevtoolsPanel />
                     </RefineKbarProvider>
                 </Suspense>
             </body>

@@ -3,9 +3,37 @@
 import { useNavigation } from '@refinedev/core';
 import { useTable } from '@refinedev/react-table';
 import { ColumnDef, flexRender } from '@tanstack/react-table';
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 export default function CategoryList() {
+
+    const { edit, show, create } = useNavigation();
+
+    // 1. Store the navigation functions in refs, so we can ensure
+    //    we always call the "current" version without re-creating
+    //    the callbacks below.
+    const editRef = useRef(edit);
+    const showRef = useRef(show);
+
+    // Whenever `edit` or `show` changes, update our refs.
+    useEffect(() => {
+        editRef.current = edit;
+    }, [edit]);
+
+    useEffect(() => {
+        showRef.current = show;
+    }, [show]);
+
+    // 2. Create stable callbacks (no dependencies)
+    const handleEdit = useCallback((resource: string, id: string) => {
+        editRef.current(resource, id);
+    }, []);
+
+    const handleShow = useCallback((resource: string, id: string) => {
+        showRef.current(resource, id);
+    }, []);
+
+    // 3. Define columns once, using only stable callback reference
     const columns = React.useMemo<ColumnDef<any>[]>(
         () => [
             {
@@ -34,14 +62,14 @@ export default function CategoryList() {
                         >
                             <button
                                 onClick={() => {
-                                    show('categories', getValue() as string);
+                                    handleShow('categories', getValue() as string);
                                 }}
                             >
                 Show
                             </button>
                             <button
                                 onClick={() => {
-                                    edit('categories', getValue() as string);
+                                    handleEdit('categories', getValue() as string);
                                 }}
                             >
                 Edit
@@ -51,10 +79,8 @@ export default function CategoryList() {
                 }
             }
         ],
-        []
+        [handleEdit, handleShow]
     );
-
-    const { edit, show, create } = useNavigation();
 
     const {
         getHeaderGroups,
