@@ -6,7 +6,7 @@ import { useCreate, useDelete, useList, useUpdate } from '@refinedev/core';
 import { ResourceModel, EventModel, AssignmentModel } from '@bryntum/scheduler';
 
 type SyncData = {
-  action: 'dataset' | 'add' | 'remove' | 'update';
+  action: 'dataset' | 'add' | 'remove' | 'update' | 'removeAll' | 'clearchanges' | 'filter' | 'replace';
   records: {
     data: ResourceModel | EventModel | AssignmentModel;
     meta: {
@@ -16,7 +16,10 @@ type SyncData = {
   store: {
     id: 'resources' | 'events' | 'assignments';
   };
+  changes: object;
 };
+
+type Writable<T> = { -readonly [K in keyof T]: T[K] };
 
 export default function Scheduler({ ...props }) {
 
@@ -50,7 +53,7 @@ export default function Scheduler({ ...props }) {
         disableCreate = false;
     }
 
-    const syncData = ({ store, action, records }: SyncData) => {
+    const syncData = ({ store, action, records, changes }: SyncData) => {
         const storeId = store.id;
         if (storeId === 'resources') {
             if (action === 'add') {
@@ -80,7 +83,7 @@ export default function Scheduler({ ...props }) {
                 for (let i = 0; i < records.length; i++) {
                     if (`${records[i].data.id}`.startsWith('_generated')) return;
                     const modifiedVariables = records[i].meta
-                        .modified as Partial<ResourceModel>;
+                        .modified as Writable<Partial<ResourceModel>>;
                     (Object.keys(modifiedVariables) as Array<keyof ResourceModel>).forEach(
                         (key) => {
                             modifiedVariables[key] = (records[i].data as ResourceModel)[
@@ -139,7 +142,7 @@ export default function Scheduler({ ...props }) {
                     }
                     else {
                         const modifiedVariables = records[i].meta
-                            .modified as Partial<ResourceModel>;
+                            .modified as Writable<Partial<EventModel>>;
                         (Object.keys(modifiedVariables) as Array<keyof EventModel>).forEach(
                             (key) => {
                                 modifiedVariables[key] = (records[i].data as EventModel)[
@@ -184,8 +187,8 @@ export default function Scheduler({ ...props }) {
                         dataProviderName : 'scheduler',
                         id               : records[i].data.id,
                         values           : {
-                            eventId    : records[i].data.eventId,
-                            resourceId : records[i].data.resourceId
+                            eventId    : (records[i].data as AssignmentModel).eventId,
+                            resourceId : (records[i].data as AssignmentModel).resourceId
                         }
                     });
                 }
