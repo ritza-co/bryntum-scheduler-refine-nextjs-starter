@@ -3,9 +3,37 @@
 import { GetManyResponse, useMany, useNavigation } from '@refinedev/core';
 import { useTable } from '@refinedev/react-table';
 import { ColumnDef, flexRender } from '@tanstack/react-table';
-import React from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 export default function BlogPostList() {
+
+    const { edit, show, create } = useNavigation();
+
+    // 1. Store the navigation functions in refs, so we can ensure
+    //    we always call the "current" version without re-creating
+    //    the callbacks below.
+    const editRef = useRef(edit);
+    const showRef = useRef(show);
+
+    // Whenever `edit` or `show` changes, update our refs.
+    useEffect(() => {
+        editRef.current = edit;
+    }, [edit]);
+
+    useEffect(() => {
+        showRef.current = show;
+    }, [show]);
+
+    // 2. Create stable callbacks (no dependencies)
+    const handleEdit = useCallback((resource: string, id: string) => {
+        editRef.current(resource, id);
+    }, []);
+
+    const handleShow = useCallback((resource: string, id: string) => {
+        showRef.current(resource, id);
+    }, []);
+
+    // 3. Define columns once, using only stable callback references
     const columns = React.useMemo<ColumnDef<any>[]>(
         () => [
             {
@@ -75,14 +103,14 @@ export default function BlogPostList() {
                         >
                             <button
                                 onClick={() => {
-                                    show('blog_posts', getValue() as string);
+                                    handleShow('blog_posts', getValue() as string);
                                 }}
                             >
                 Show
                             </button>
                             <button
                                 onClick={() => {
-                                    edit('blog_posts', getValue() as string);
+                                    handleEdit('blog_posts', getValue() as string);
                                 }}
                             >
                 Edit
@@ -92,10 +120,8 @@ export default function BlogPostList() {
                 }
             }
         ],
-        []
+        [handleEdit, handleShow]
     );
-
-    const { edit, show, create } = useNavigation();
 
     const {
         getHeaderGroups,
@@ -132,6 +158,16 @@ export default function BlogPostList() {
             categoryData
         }
     }));
+    //   useEffect(() => {
+    //     // only run this if categoryData changes
+    //     setOptions((prev) => ({
+    //         ...prev,
+    //         meta: {
+    //             ...prev.meta,
+    //             categoryData,
+    //         },
+    //     }));
+    // }, [categoryData, setOptions]);
 
     return (
         <div style={{ padding : '16px' }}>

@@ -24,7 +24,7 @@ export default function BlogPostCreate() {
 
     React.useEffect(() => {
         setValue('category.id', blogPostsData?.category?.id);
-    }, [categoryOptions]);
+    }, [categoryOptions, blogPostsData?.category?.id, setValue]);
 
     return (
         <div style={{ padding : '16px' }}>
