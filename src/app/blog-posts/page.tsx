@@ -158,16 +158,6 @@ export default function BlogPostList() {
             categoryData
         }
     }));
-    //   useEffect(() => {
-    //     // only run this if categoryData changes
-    //     setOptions((prev) => ({
-    //         ...prev,
-    //         meta: {
-    //             ...prev.meta,
-    //             categoryData,
-    //         },
-    //     }));
-    // }, [categoryData, setOptions]);
 
     return (
         <div style={{ padding : '16px' }}>
