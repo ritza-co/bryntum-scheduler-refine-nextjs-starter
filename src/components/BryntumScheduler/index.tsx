@@ -3,20 +3,17 @@ import { BryntumScheduler } from '@bryntum/scheduler-react';
 import { useEffect, useMemo, useRef } from 'react';
 import '@bryntum/scheduler/scheduler.stockholm.css';
 import { useCreate, useDelete, useList, useUpdate } from '@refinedev/core';
-import { ResourceModel, EventModel, AssignmentModel } from '@bryntum/scheduler';
+import { ResourceModel, EventModel, AssignmentModel, Grid, Store, Model } from '@bryntum/scheduler';
 
-type SyncData = {
-  action: 'dataset' | 'add' | 'remove' | 'update';
-  records: {
-    data: ResourceModel | EventModel | AssignmentModel;
-    meta: {
-      modified: Partial<ResourceModel> | Partial<EventModel> | Partial<AssignmentModel>;
-    };
+interface SyncData {
+  source: Grid;
+  store: Store;
+  action: 'remove' | 'removeAll' | 'add' | 'clearchanges' | 'filter' | 'update' | 'dataset' | 'replace';
+  records: Model[];
+  changes: object;
   }[];
-  store: {
-    id: 'resources' | 'events' | 'assignments';
-  };
-};
+
+type Writable<T> = { -readonly [K in keyof T]: T[K] };
 
 export default function Scheduler({ ...props }) {
 
@@ -56,9 +53,11 @@ export default function Scheduler({ ...props }) {
             if (action === 'add') {
                 const resourcesIds = resources.map((obj) => obj.id);
                 for (let i = 0; i < records.length; i++) {
-                    const resourceExists = resourcesIds.includes(records[i].data.id);
+                    const record = records[i] as ResourceModel;
+                    const recordData = (record as any).data as ResourceModel;
+                    const resourceExists = resourcesIds.includes(recordData.id);
                     if (resourceExists) return;
-                    const { id, ...newResource } = records[i].data as ResourceModel;
+                    const { id, ...newResource } = recordData as ResourceModel;
                     mutateCreate({
                         resource         : 'resources',
                         dataProviderName : 'scheduler',
@@ -67,32 +66,36 @@ export default function Scheduler({ ...props }) {
                 }
             }
             if (action === 'remove') {
-                if (`${records[0]?.data?.id}`.startsWith('_generated')) return;
-                records.forEach((record) => {
+                const record = records[0] as ResourceModel;
+                const recordData = (record as any).data as ResourceModel;
+                if (`${recordData?.id}`.startsWith('_generated')) return;
+                records.forEach((rec) => {
                     mutateDelete({
                         resource         : 'resources',
                         dataProviderName : 'scheduler',
-                        id               : record.data.id
+                        id               : rec.id
                     });
                 });
             }
             if (action === 'update') {
                 for (let i = 0; i < records.length; i++) {
-                    if (`${records[i].data.id}`.startsWith('_generated')) return;
-                    const modifiedVariables = records[i].meta
-                        .modified as Partial<ResourceModel>;
+                    const record = records[i] as ResourceModel;
+                    const recordData = (record as any).data as ResourceModel;
+                    if (`${records[i].id}`.startsWith('_generated')) return;
+                    const modifiedVariables = (records[i] as any).meta
+                        .modified as Writable<Partial<ResourceModel>>;
                     (Object.keys(modifiedVariables) as Array<keyof ResourceModel>).forEach(
                         (key) => {
-                            modifiedVariables[key] = (records[i].data as ResourceModel)[
+                            modifiedVariables[key] = (recordData)[
                                 key
-                            ] as any;
+                            ];
                         }
                     );
 
                     mutateUpdate({
                         resource         : 'resources',
                         dataProviderName : 'scheduler',
-                        id               : records[i].data.id,
+                        id               : recordData.id,
                         values           : {
                             ...modifiedVariables
                         }
@@ -102,56 +105,74 @@ export default function Scheduler({ ...props }) {
         }
         if (storeId === 'events') {
             if (action === 'remove') {
-                if (`${records[0]?.data?.id}`.startsWith('_generated')) return;
-                records.forEach((record) => {
+                const record = records[0] as ResourceModel;
+                const recordData = (record as any).data as ResourceModel;
+                if (`${recordData?.id}`.startsWith('_generated')) return;
+                records.forEach((rec) => {
                     mutateDelete({
                         resource         : 'events',
                         dataProviderName : 'scheduler',
-                        id               : record.data.id
+                        id               : rec.id
                     });
                 });
             }
             if (action === 'update') {
                 if (disableCreate) return;
                 for (let i = 0; i < records.length; i++) {
-                    if (`${records[i].data.id}`.startsWith('_generated')) {
+                    const record = records[0] as EventModel;
+                    const recordData = (record as any).data as EventModel;
+                    if (`${recordData.id}`.startsWith('_generated')) {
                         const eventsIds = events.map((obj) => obj.id);
                         for (let i = 0; i < records.length; i++) {
-                            const eventExists = eventsIds.includes(records[i].data.id);
+                            const eventExists = eventsIds.includes(recordData.id);
                             if (eventExists) return;
-                            const { id, ...newEvent } = records[i].data as EventModel;
+                            const { id, ...newEvent } = recordData as EventModel;
                             // get current resource
-                            const resourceId = schedulerRef?.current?.instance?.selectedRecords[0].data.id;
+                            const resourceId = (schedulerRef?.current?.instance?.selectedRecords[0] as any).data.id;
                             mutateCreate({
                                 resource         : 'events',
                                 dataProviderName : 'scheduler',
                                 values           : newEvent
                             }, {
-                                onSuccess : ({  data }) => {
-                                    mutateCreate({
+                                onSuccess : ({ data }) => {
+                                    return mutateCreate({
                                         resource         : 'assignments',
                                         dataProviderName : 'scheduler',
                                         values           : { eventId : data.id, resourceId }
+                                    }, {
+                                        onSuccess : (response) => {
+                                            console.log('Assignment created:', response);
+                                        },
+                                        onError : (error) => {
+                                            console.error('Error creating assignment:', error);
+                                        }
                                     });
+                                },
+                                onError : (error) => {
+                                    console.error('Error creating event:', error);
+                                },
+                                onSettled : () => {
+                                    // Handle completion regardless of success/failure
+                                    console.log('Event creation settled');
                                 }
                             });
                         }
                     }
                     else {
-                        const modifiedVariables = records[i].meta
-                            .modified as Partial<ResourceModel>;
+                        const modifiedVariables = (records[i] as any).meta
+                            .modified as Writable<Partial<EventModel>>;
                         (Object.keys(modifiedVariables) as Array<keyof EventModel>).forEach(
                             (key) => {
-                                modifiedVariables[key] = (records[i].data as EventModel)[
+                                modifiedVariables[key] = (recordData)[
                                     key
-                                ] as any;
+                                ];
                             }
                         );
 
                         mutateUpdate({
                             resource         : 'events',
                             dataProviderName : 'scheduler',
-                            id               : records[i].data.id,
+                            id               : recordData.id,
                             values           : {
                                 ...modifiedVariables
                             }
@@ -164,10 +185,12 @@ export default function Scheduler({ ...props }) {
             if (action === 'add') {
                 const assignmentIds = assignments.map((obj) => obj.id);
                 for (let i = 0; i < records.length; i++) {
-                    const assignmentExists = assignmentIds.includes(records[i].data.id);
+                    const record = records[0] as AssignmentModel;
+                    const recordData = (record as any).data as AssignmentModel;
+                    const assignmentExists = assignmentIds.includes(recordData.id);
                     if (assignmentExists) return;
                     if (disableCreate) return;
-                    const { eventId, resourceId } = records[i].data as AssignmentModel;
+                    const { eventId, resourceId } = recordData as AssignmentModel;
                     if (`${eventId}`.startsWith('_generated') || `${resourceId}`.startsWith('_generated')) return;
                     mutateCreate({
                         resource         : 'assignments',
@@ -178,14 +201,16 @@ export default function Scheduler({ ...props }) {
             }
             if (action === 'update') {
                 for (let i = 0; i < records.length; i++) {
-                    if (`${records[i].data.id}`.startsWith('_generated')) return;
+                    const record = records[0] as AssignmentModel;
+                    const recordData = (record as any).data as AssignmentModel;
+                    if (`${recordData.id}`.startsWith('_generated')) return;
                     mutateUpdate({
                         resource         : 'assignments',
                         dataProviderName : 'scheduler',
-                        id               : records[i].data.id,
+                        id               : recordData.id,
                         values           : {
-                            eventId    : records[i].data.eventId,
-                            resourceId : records[i].data.resourceId
+                            eventId    : recordData.eventId,
+                            resourceId : recordData.resourceId
                         }
                     });
                 }
